@@ -1,29 +1,45 @@
-; Snap window to the top left quarter of the screen
+; Snap window to top left quarter of screen (CTRL+ALT+U)
 ^!u::
-  WinMove, A, , 0, 0, A_ScreenWidth//2, A_ScreenHeight//2
+  WinGet, activeWindow, ID, A
+  SysGet, monitorWidth, 0
+  SysGet, monitorHeight, 1
+  WinMove, ahk_id %activeWindow%, , 0, 0, %monitorWidth//2, %monitorHeight//2
 return
 
-; Snap window to the bottom left quarter of the screen
+; Snap window to bottom left quarter of screen (CTRL+ALT+N)
 ^!n::
-  WinMove, A, , 0, A_ScreenHeight//2, A_ScreenWidth//2, A_ScreenHeight//2
+  WinGet, activeWindow, ID, A
+  SysGet, monitorWidth, 0
+  SysGet, monitorHeight, 1
+  WinMove, ahk_id %activeWindow%, , 0, %monitorHeight//2, %monitorWidth//2, %monitorHeight//2
 return
 
-; Snap window to the left half of the screen
+; Snap window to left half of screen (CTRL+ALT+J)
 ^!j::
-  WinMove, A, , 0, 0, A_ScreenWidth//2, A_ScreenHeight
+  WinGet, activeWindow, ID, A
+  SysGet, monitorWidth, 0
+  WinMove, ahk_id %activeWindow%, , 0, 0, %monitorWidth//2, A_ScreenHeight
 return
 
-; Snap window to the top right quarter of the screen
+; Snap window to top right quarter of screen (CTRL+ALT+O)
 ^!o::
-  WinMove, A, , A_ScreenWidth//2, 0, A_ScreenWidth//2, A_ScreenHeight//2
+  WinGet, activeWindow, ID, A
+  SysGet, monitorWidth, 0
+  SysGet, monitorHeight, 1
+  WinMove, ahk_id %activeWindow%, , %monitorWidth//2, 0, %monitorWidth//2, %monitorHeight//2
 return
 
-; Snap window to the bottom right quarter of the screen
-^!>::
-  WinMove, A, , A_ScreenWidth//2, A_ScreenHeight//2, A_ScreenWidth//2, A_ScreenHeight//2
+; Snap window to bottom right quarter of screen (CTRL+ALT+.)
+^!.::
+  WinGet, activeWindow, ID, A
+  SysGet, monitorWidth, 0
+  SysGet, monitorHeight, 1
+  WinMove, ahk_id %activeWindow%, , %monitorWidth//2, %monitorHeight//2, %monitorWidth//2, %monitorHeight//2
 return
 
-; Snap window to the right half of the screen
-^!k::
-  WinMove, A, , A_ScreenWidth//2, 0, A_ScreenWidth//2, A_ScreenHeight
+; Snap window to right half of screen (CTRL+ALT+L)
+^!l::
+  WinGet, activeWindow, ID, A
+  SysGet, monitorWidth, 0
+  WinMove, ahk_id %activeWindow%, , %monitorWidth//2, 0, %monitorWidth//2, A_ScreenHeight
 return
