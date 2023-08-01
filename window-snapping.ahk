@@ -27,3 +27,8 @@ return
 ^!l::
   WinMove, A, , A_ScreenWidth//2, 0, A_ScreenWidth//2, A_ScreenHeight
 return
+
+; Maximize the currently focused window with CTRL+ALT+M
+^!m::
+  WinMaximize, A
+return
