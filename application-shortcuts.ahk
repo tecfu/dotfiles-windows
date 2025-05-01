@@ -30,15 +30,3 @@ Return
 ; %variable% = Dereferences the variable to use its content
 ; MsgBox, Text = Displays a simple message box
 ; Return = Ends the hotkey definition
-
-; Remap Caps Lock to Escape and Escape to Caps Lock
-
-; Make the physical Caps Lock key send an Escape keystroke.
-; This overrides its default toggling behavior.
-CapsLock::Send {Esc}
-
-; Make the physical Escape key toggle the actual Caps Lock state (On/Off).
-; This overrides Escape's default behavior.
-Esc::SetCapsLockState, Toggle
-
-Return ; Good practice to end hotkey sections, though often implicit here
