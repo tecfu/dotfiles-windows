@@ -1,12 +1,16 @@
 # Configuration Files for Windows
 
-### AutoHotkey
+## AutoHotkey
+
+- Install AutoHotkey by downloading the [zip file from Github](https://github.com/AutoHotkey/AutoHotkey/releases), store version will likely blocked on corporate devices
 
 - Run Script at Startup
 
-Move *.ahk file(s) to:
-
 ```
-C:\Users\<UserName>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+Press Win + R
+-> Type shell:startup
+-> Right-click inside the Startup folder
+-> New
+-> Shortcut
+-> Browse to your .ahk file -> Next -> Finish)
 ```
-
