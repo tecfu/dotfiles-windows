@@ -1,3 +1,9 @@
+# Working directory
+general.working_directory = "%USERPROFILE%"
+
+[font]
+size = 16
+
 # Cursor Color settings
 [colors.cursor]
 cursor = "0x00ff00" # Green cursor block
@@ -44,7 +50,7 @@ mouse = "Right"
 
 # Scrolling configuration
 [scrolling]
-history = 100000 # Lines of scrollback history
+history = 10000 # Lines of scrollback history
 multiplier = 10  # Scrolling speed multiplier
 
 # === MODIFIED SECTION FOR WINDOWS GIT BASH ===
