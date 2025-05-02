@@ -35,7 +35,8 @@ Return
 ; Map Win+V to open/activate Visual Studio Code
 ;-----------------------------------------
 #v::
-    vsCodePath := "C:\Users\" . A_UserName . "\AppData\Local\Programs\Microsoft VS Code\Code.exe" ; --- VERIFY USER PATH! ---
+    EnvGet, userProfileDir_VSCode, USERPROFILE ; Explicitly get USERPROFILE env var
+    vsCodePath := userProfileDir_VSCode . "\AppData\Local\Programs\Microsoft VS Code\Code.exe" ; --- VERIFY USER PATH! ---
     vsCodePathSystem := "C:\Program Files\Microsoft VS Code\Code.exe" ; --- VERIFY SYSTEM PATH! ---
 
     If WinExist("ahk_exe Code.exe") && WinActive("ahk_exe Code.exe") {
@@ -90,13 +91,39 @@ Return
 
 
 ;-----------------------------------------
+; Map Win+N to open/activate Neovim
+;-----------------------------------------
+#n:: ; Changed hotkey from ^n to #n (Win+N)
+    EnvGet, userProfileDir_Nvim, USERPROFILE ; Explicitly get USERPROFILE env var into a variable
+    ; --- !! STRONGLY VERIFY THIS PATH !! ---
+    ; Construct path using the retrieved environment variable
+    neovimPath := userProfileDir_Nvim . "\Applications\nvim-win64\nvim-win64\bin\nvim.exe"
+    neovimExe := "nvim.exe" ; Or maybe "nvim-qt.exe" if using a GUI version?
+
+    If WinExist("ahk_exe " . neovimExe) && WinActive("ahk_exe " . neovimExe) {
+        Return ; Already active
+    } Else If WinExist("ahk_exe " . neovimExe) {
+        WinActivate, ahk_exe %neovimExe%
+    } Else If FileExist(neovimPath) {
+        ; Run inside Windows Terminal (wt.exe) - Recommended for terminal nvim
+        ; Using %neovimPath% which now contains the full path derived from userProfileDir_Nvim
+        Run, wt.exe new-tab --title Neovim "%neovimPath%" ; Added quotes around path variable for safety
+
+        ; Option 2: Run inside Git Bash's Mintty (Adapt path to mintty.exe if needed)
+        ; Run, "C:\Program Files\Git\usr\bin\mintty.exe" -e "%neovimPath%"
+
+        ; Option 3: If using Alacritty (Adapt path to alacritty.exe)
+        ; Run, "C:\Path\To\Alacritty\alacritty.exe" -e "%neovimPath%"
+    }
+    Else {
+        MsgBox, Neovim executable not found at:`n%neovimPath%`n(Based on USERPROFILE: %userProfileDir_Nvim%)`nPlease verify the path and executable name (`neovimExe` variable) in the AutoHotkey script.
+    }
+Return
+
+
+;-----------------------------------------
 ; Map Ctrl+Q to close the ACTIVE window
 ;-----------------------------------------
-; ^ represents the Ctrl key
-; q represents the 'q' key
-; This will attempt to close the currently focused window, regardless of the application.
-; It overrides the default Ctrl+Q behavior in applications that use it.
-
 ^q::
     WinClose, A ; 'A' refers to the active window
 Return
