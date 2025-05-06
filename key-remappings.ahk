@@ -20,3 +20,12 @@ Return
 ^q::
     WinClose, A ; 'A' refers to the active window
 Return
+
+
+;-----------------------------------------
+; Map Ctrl+Shift+4 to Win+Shift+S
+; (Often used to trigger Windows Snipping Tool with an alternative shortcut)
+;-----------------------------------------
+$^+4:: ; Use $ to prevent self-triggering if Send involves the hotkey's own modifiers
+    Send, #+s
+Return
