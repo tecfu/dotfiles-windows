@@ -42,3 +42,7 @@ plugins=(
 )
 
 source "$OSH/oh-my-bash.sh"
+
+export TERM="xterm-256color"
+
+alias nvim="~/Applications/nvim-win64/bin/nvim.exe"
