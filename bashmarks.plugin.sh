@@ -234,3 +234,9 @@ alias s='bm -a'       # Save a bookmark [bookmark_name]
 alias g='bm -g'       # Go to bookmark [bookmark_name]
 alias p='bm -p'       # Print bookmark of a path [path]
 alias d='bm -d'       # Delete a bookmark [bookmark_name]
+
+# Alias: bm ls -> bm -l
+if [[ "$1" == "ls" ]]; then
+  shift
+  set -- -l "$@"
+fi
