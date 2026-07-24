@@ -1,16 +1,79 @@
 # General settings
-[window]
-padding = { x = 10, y = 10 }
-dynamic_title = true
+
+[font]
+size = 13
+
+# Cursor Color settings
+[colors.cursor]
+cursor = "0x00ff00" # Green cursor block
+text = "0x000000"   # Black text under the cursor
+
+# Cursor behavior settings
+[cursor]
+blink_interval = 500 # Blink interval in milliseconds
+blink_timeout = 0    # 0 means blink indefinitely
+
+# Cursor style settings
+[cursor.style]
+blinking = "Always" # Cursor always blinks
+shape = "Block"     # Use a block shape for the cursor
+
+# Keyboard bindings
+
+# Clears the screen cleanly in Windows PowerShell
+[[keyboard.bindings]]
+key = "K"
+mods = "Alt"
+chars = "\u000c" # Sends Ctrl+L, which natively clears the PowerShell screen
+
+# Scrolling bindings
+[[keyboard.bindings]]
+key = "J"
+mods = "Control|Shift"
+action = "ScrollLineDown"
+
+[[keyboard.bindings]]
+key = "K"
+mods = "Control|Shift"
+action = "ScrollLineUp"
+
+[[keyboard.bindings]]
+key = "J"
+mods = "Control"
+action = "ScrollPageDown"
+mode = "~AppCursor|~AppKeypad"
+
+[[keyboard.bindings]]
+key = "K"
+mods = "Control"
+action = "ScrollPageUp"
+mode = "~AppCursor|~AppKeypad"
+
+# Alternative scrolling bindings
+[[keyboard.bindings]]
+key = "Up"
+mods = "Control|Shift"
+action = "ScrollLineUp"
+
+[[keyboard.bindings]]
+key = "Down"
+mods = "Control|Shift"
+action = "ScrollLineDown"
+
+# Mouse bindings
+[[mouse.bindings]]
+action = "Paste" # Right-click to paste
+mouse = "Right"
+
+# Scrolling configuration
+[scrolling]
+history = 10000 # Lines of scrollback history
+multiplier = 10  # Scrolling speed multiplier
 
 # Shell configuration (Defaults to PowerShell)
 [terminal.shell]
 program = "powershell.exe"
 args = ["-NoLogo"]
-
-# Font configuration (Uses standard Windows fonts)
-[font]
-size = 11.0
 
 [font.normal]
 family = "Consolas"

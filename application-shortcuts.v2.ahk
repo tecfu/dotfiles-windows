@@ -123,18 +123,14 @@ StrJoin(arr, delim := "`n") {
 ;===========================================================
 ; Ctrl+Alt+T -> Alacritty (Windows)
 ;
-; Uses config: %USERPROFILE%\dotfiles-windows\.alacritty.ps.toml
+; Uses config: %USERPROFILE%\dotfiles-windows.alacritty.ps.toml
 ;===========================================================
 ; ==================== Alacritty Hotkey ====================
 ; Ctrl+Alt+T → Open / Focus Alacritty
 
 ^!t:: {
-    userProfile := EnvGet("USERPROFILE")
-    alacrittyPath := userProfile "\Applications\Alacritty.exe"
-    
-    if WinExist("ahk_exe Alacritty.exe") {
-        WinActivate("ahk_exe Alacritty.exe")
-    } else {
-        Run alacrittyPath
-    }
+userProfile := EnvGet("USERPROFILE")
+alacrittyExe := userProfile . "\Applications\Alacritty.exe"
+configPath := userProfile . "\dotfiles-windows\.alacritty.ps.toml"
+RUN('"' . alacrittyExe . '" --config-file "' . configPath . '"')
 }
