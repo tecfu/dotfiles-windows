@@ -129,7 +129,7 @@ Return
 
     ; !! IMPORTANT: Verify the RELATIVE path from your USERPROFILE directory !!
     ; Construct the full path to your Alacritty executable using the USERPROFILE variable
-    alacrittyRelativePath := "\Applications\Alacritty-v0.15.1-portable.exe" ; <-- **VERIFY/UPDATE THIS RELATIVE PATH**
+    alacrittyRelativePath := "\Applications\Alacritty.exe" ; <-- **VERIFY/UPDATE THIS RELATIVE PATH**
     alacrittyPath := userProfileDir . alacrittyRelativePath
 
     ; Check if Alacritty exists before trying to run it
