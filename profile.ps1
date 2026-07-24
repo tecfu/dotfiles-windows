@@ -1,33 +1,40 @@
 # ==========================================
-# PSReadLine Vi Mode Configuration (.inputrc mappings)
+# PSReadLine Vi Mode Configuration
 # ==========================================
 
-# 1. Enable Vi Mode and show mode status in prompt
+# 1. Enable Vi Mode
 Set-PSReadLineOption -EditMode Vi
 
-# 2. Dynamic Cursor Shape changing based on mode (Insert vs Command)
+# 2. Configure the Mode Indicator to use a Script
+# This is required to use ViModeChangeHandler
+Set-PSReadLineOption -ViModeIndicator Script
+
+# 3. Define the Handler Function
 function OnViModeChange {
-    if ($args[0] -eq 'Command') {
-        Write-Host -NoNewline "`e[2 q" # Block cursor for Command mode
+    param($Mode)
+    
+    # Using [char]27 for compatibility across PS 5.1 and PS 7
+    if ($Mode -eq 'Command') {
+        [Console]::Write("$([char]27)[2 q") # Block cursor
     } else {
-        Write-Host -NoNewline "`e[6 q" # Steady Bar cursor for Insert mode
+        [Console]::Write("$([char]27)[6 q") # Bar cursor
     }
 }
-Set-PSReadLineOption -ViModeIndicator Script -ViModeChangeHandler $Function:OnViModeChange
 
-# 3. Mappings for Vi-Command Mode
-# Unbind Spacebar
-Set-PSReadLineKeyHandler -Chord 'Spacebar' -ViMode Command -Function DigitArgument
-# Jump to beginning of line (mapped from: 'Space a')
-Set-PSReadLineKeyHandler -Chord 'Space,a' -ViMode Command -Function BeginningOfLine
-# Jump to end of line (mapped from: 'Space ;')
-Set-PSReadLineKeyHandler -Chord 'Space,;' -ViMode Command -Function EndOfLine
+# 4. Attach the Handler
+Set-PSReadLineOption -ViModeChangeHandler $Function:OnViModeChange
 
-# 4. Mappings for Vi-Insert Mode
-# History navigation via Up/Down arrow keys
+# 5. Key Mappings (Vi-Command Mode)
+
+# To unbind Spacebar correctly, use an empty ScriptBlock
+Set-PSReadLineKeyHandler -Chord 'Spacebar' -ViMode Command -ScriptBlock { }
+
+# Multi-chord mappings (Spacebar as leader)
+Set-PSReadLineKeyHandler -Chord 'Spacebar,a' -ViMode Command -Function BeginningOfLine
+Set-PSReadLineKeyHandler -Chord 'Spacebar,;' -ViMode Command -Function EndOfLine
+
+# 6. Key Mappings (Vi-Insert Mode)
 Set-PSReadLineKeyHandler -Chord 'UpArrow' -ViMode Insert -Function HistorySearchBackward
 Set-PSReadLineKeyHandler -Chord 'DownArrow' -ViMode Insert -Function HistorySearchForward
-
-# Jump left or right by one word via Ctrl+H and Ctrl+L
 Set-PSReadLineKeyHandler -Chord 'Ctrl+h' -ViMode Insert -Function ShellBackwardWord
 Set-PSReadLineKeyHandler -Chord 'Ctrl+l' -ViMode Insert -Function ShellForwardWord
