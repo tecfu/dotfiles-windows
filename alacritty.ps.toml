@@ -21,17 +21,26 @@ shape = "Block"
 # Keyboard bindings
 [keyboard]
 bindings = [
-  # Clears the screen (PowerShell native Clear-Host)
-  { key = "K", mods = "Alt", chars = "Clear-Host\r" },
-  { key = "K", mods = "Command", chars ="Clear-Host\r" },
+  # --- Polyfill for Clear and Reset (Windows Alt+K) ---
+  # 1. Send Ctrl+L (\x0c) to the shell so PSReadLine safely clears the visible screen
+  { key = "K", mods = "Alt", chars = "\x0c" },
+  # 2. Tell Alacritty to clear the scrollback history buffer natively
+  { key = "K", mods = "Alt", action = "ClearHistory" },
+
+  # Same workaround for Command+K (if you use this config on macOS too)
+  { key = "K", mods = "Command", chars = "\x0c" },
+  { key = "K", mods = "Command", action = "ClearHistory" },
+
   # Scrolling bindings
   { key = "J", mods = "Control|Shift", action = "ScrollLineDown" },
   { key = "K", mods = "Control|Shift", action = "ScrollLineUp" },
   { key = "J", mods = "Control", action = "ScrollPageDown", mode = "~AppCursor|~AppKeypad" },
   { key = "K", mods = "Control", action = "ScrollPageUp", mode = "~AppCursor|~AppKeypad" },
+  
   # Alternative scrolling bindings
   { key = "Up", mods = "Control|Shift", action = "ScrollLineUp" },
   { key = "Down", mods = "Control|Shift", action = "ScrollLineDown" },
+  
   # Spawn new instance binding
   { key = 'T', mods = 'Control|Command', action = 'SpawnNewInstance' },
 ]
