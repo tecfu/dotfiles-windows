@@ -1,4 +1,15 @@
 # ==========================================
+# Neovim Setup
+# ==========================================
+
+# Tell Neovim to source this specific config file during normal initialization
+# (This avoids the '-u' flag bug which skips loading plugins and syntax)
+$env:VIMINIT = 'source ~/.vim/init.vim'
+
+# Alias 'nvim' directly to the executable
+Set-Alias -Name nvim -Value "$HOME\Applications\nvim-win64\bin\nvim.exe"
+
+# ==========================================
 # PSReadLine Vi Mode Configuration
 # ==========================================
 
