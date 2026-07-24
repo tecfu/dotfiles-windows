@@ -32,10 +32,6 @@ bindings = [
   { key = "K", mods = "Control|Shift", action = "ScrollLineUp" },
   { key = "J", mods = "Control", action = "ScrollPageDown", mode = "~AppCursor|~AppKeypad" },
   { key = "K", mods = "Control", action = "ScrollPageUp", mode = "~AppCursor|~AppKeypad" },
-  # Vi mode bindings (if used)
-  { key = "A", mode = "Vi|~Search", action = "First" },
-  { key = "Semicolon", mode = "Vi|~Search", action = "Last" },
-  { key = "Y", mode = "Vi|~Search", action = "Copy" },
   # Alternative scrolling bindings
   { key = "Up", mods = "Control|Shift", action = "ScrollLineUp" },
   { key = "Down", mods = "Control|Shift", action = "ScrollLineDown" },

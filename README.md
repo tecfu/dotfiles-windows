@@ -14,6 +14,13 @@ To install the configuration files (`.bashrc`, `.inputrc`, `alacritty.toml`) and
    - Create symlinks to the files in this repository.
    - Install [oh-my-bash](https://github.com/ohmybash/oh-my-bash) if it is not already installed.
 
+## Alacritty Configuration
+
+Two Alacritty config files are included:
+
+- `alacritty.toml` — defaults to Git Bash as the shell.
+- `alacritty.ps.toml` — uses PowerShell 7 (pwsh.exe). Copy to `alacritty.toml` if you prefer PowerShell as your Alacritty shell.
+
 ## AutoHotkey
 
 - Install AutoHotkey by downloading the [zip file from Github](https://github.com/AutoHotkey/AutoHotkey/releases), store version will likely blocked on corporate devices

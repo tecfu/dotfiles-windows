@@ -33,27 +33,16 @@ else
     echo "oh-my-bash is already installed at $HOME/.oh-my-bash"
 fi
 
-# 4. Install alacritty.toml
-# Check if APPDATA is set (Git Bash usually inherits Windows env vars)
-if [ -z "$APPDATA" ]; then
-    echo "WARNING: APPDATA environment variable is not set. Skipping Alacritty config."
-else
-    # Convert Windows path to Git Bash path if necessary, though usually mixed works.
-    # But mkdir might need care.
-    # APPDATA is typically C:\Users\User\AppData\Roaming
-    # We can use 'cygpath' to convert it to valid posix path for bash tools
-    if command -v cygpath &> /dev/null; then
-        ALACRITTY_CONFIG_DIR="$(cygpath -u "$APPDATA")/alacritty"
-    else
-        ALACRITTY_CONFIG_DIR="$APPDATA/alacritty"
-    fi
-
-    if [ ! -d "$ALACRITTY_CONFIG_DIR" ]; then
-        echo "Creating directory $ALACRITTY_CONFIG_DIR"
-        mkdir -p "$ALACRITTY_CONFIG_DIR"
-    fi
-    backup_and_link "$REPO_DIR/alacritty.toml" "$ALACRITTY_CONFIG_DIR/alacritty.toml"
+# 4. Install alacritty configs
+# alacritty.toml goes in $HOME for WSL / Git Bash (Linux)
+backup_and_link "$REPO_DIR/alacritty.toml" "$HOME/.alacritty.toml"
+# alacritty.ps.toml goes in ~/.config/alacritty/ for Windows PowerShell
+ALACRITTY_PS_CONFIG_DIR="$HOME/.config/alacritty"
+if [ ! -d "$ALACRITTY_PS_CONFIG_DIR" ]; then
+    echo "Creating directory $ALACRITTY_PS_CONFIG_DIR"
+    mkdir -p "$ALACRITTY_PS_CONFIG_DIR"
 fi
+backup_and_link "$REPO_DIR/alacritty.ps.toml" "$ALACRITTY_PS_CONFIG_DIR/alacritty.ps.toml"
 
 echo ""
 echo "Configuration files installed successfully!"
