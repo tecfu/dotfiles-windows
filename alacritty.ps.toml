@@ -1,0 +1,57 @@
+# Working directory is handled dynamically via terminal.shell.args below.
+
+[font]
+size = 16
+
+# Cursor Color settings
+[colors.cursor]
+cursor = "#00ff00" # Fixed: Standard hex string format
+text = "#000000"   # Fixed: Standard hex string format
+
+# Cursor behavior settings
+[cursor]
+blink_interval = 500
+blink_timeout = 0
+
+# Cursor style settings
+[cursor.style]
+blinking = "Always"
+shape = "Block"
+
+# Keyboard bindings
+[keyboard]
+bindings = [
+  # Clears the screen (PowerShell native Clear-Host)
+  { key = "K", mods = "Alt", chars = "Clear-Host\r" },
+  { key = "K", mods = "Command", chars ="Clear-Host\r" },
+  # Scrolling bindings
+  { key = "J", mods = "Control|Shift", action = "ScrollLineDown" },
+  { key = "K", mods = "Control|Shift", action = "ScrollLineUp" },
+  { key = "J", mods = "Control", action = "ScrollPageDown", mode = "~AppCursor|~AppKeypad" },
+  { key = "K", mods = "Control", action = "ScrollPageUp", mode = "~AppCursor|~AppKeypad" },
+  # Alternative scrolling bindings
+  { key = "Up", mods = "Control|Shift", action = "ScrollLineUp" },
+  { key = "Down", mods = "Control|Shift", action = "ScrollLineDown" },
+  # Spawn new instance binding
+  { key = 'T', mods = 'Control|Command', action = 'SpawnNewInstance' },
+]
+
+# Mouse bindings
+[[mouse.bindings]]
+action = "Paste"
+mouse = "Right"
+
+# Scrolling configuration
+[scrolling]
+history = 10000
+multiplier = 10
+
+# === MODIFIED SECTION FOR POWERSHELL ===
+[terminal.shell]
+program = "C:/Program Files/PowerShell/7/pwsh.exe"
+# Fixed: Added runtime flags to dynamically force terminal initialization into your User Profile folder (~)
+args = ["-NoLogo", "-NoExit", "-Command", "Set-Location ~"]
+
+# Window settings
+[window]
+option_as_alt = "Both"
