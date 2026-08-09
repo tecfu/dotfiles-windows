@@ -1,79 +1,9 @@
 # General settings
+[general]
+import = [".alacritty.base.toml"]
 
 [font]
 size = 13
-
-# Cursor Color settings
-[colors.cursor]
-cursor = "0x00ff00" # Green cursor block
-text = "0x000000"   # Black text under the cursor
-
-# Cursor behavior settings
-[cursor]
-blink_interval = 500 # Blink interval in milliseconds
-blink_timeout = 0    # 0 means blink indefinitely
-
-# Cursor style settings
-[cursor.style]
-blinking = "Always" # Cursor always blinks
-shape = "Block"     # Use a block shape for the cursor
-
-# Keyboard bindings
-
-# Clears the screen cleanly in Windows PowerShell
-[[keyboard.bindings]]
-key = "K"
-mods = "Alt"
-chars = "\u000c" # Sends Ctrl+L, which natively clears the PowerShell screen
-
-# Scrolling bindings
-[[keyboard.bindings]]
-key = "J"
-mods = "Control|Shift"
-action = "ScrollLineDown"
-
-[[keyboard.bindings]]
-key = "K"
-mods = "Control|Shift"
-action = "ScrollLineUp"
-
-[[keyboard.bindings]]
-key = "J"
-mods = "Control"
-action = "ScrollPageDown"
-mode = "~AppCursor|~AppKeypad"
-
-[[keyboard.bindings]]
-key = "K"
-mods = "Control"
-action = "ScrollPageUp"
-mode = "~AppCursor|~AppKeypad"
-
-# Alternative scrolling bindings
-[[keyboard.bindings]]
-key = "Up"
-mods = "Control|Shift"
-action = "ScrollLineUp"
-
-[[keyboard.bindings]]
-key = "Down"
-mods = "Control|Shift"
-action = "ScrollLineDown"
-
-# Mouse bindings
-[[mouse.bindings]]
-action = "Paste" # Right-click to paste
-mouse = "Right"
-
-# Scrolling configuration
-[scrolling]
-history = 10000 # Lines of scrollback history
-multiplier = 10  # Scrolling speed multiplier
-
-# Shell configuration (Defaults to PowerShell)
-[terminal.shell]
-program = "powershell.exe"
-args = ["-NoLogo"]
 
 [font.normal]
 family = "Consolas"
@@ -97,3 +27,28 @@ blue    = "#7aa2f7"
 magenta = "#bb9af7"
 cyan    = "#7dcfff"
 white   = "#a9b1d6"
+
+# Keyboard bindings
+# NOTE: Cannot import .alacritty.shell-bindings.toml here - Alacritty replaces
+# (rather than merges) the `bindings` array on import, and PowerShell needs a
+# different "clear screen" binding than the bash-based shells, so the shared
+# scroll/spawn bindings are duplicated below alongside the PowerShell-specific
+# Alt+K binding.
+[keyboard]
+bindings = [
+  # Clears the screen cleanly in Windows PowerShell
+  { key = "K", mods = "Alt", chars = "\u000c" }, # Sends Ctrl+L, which natively clears the PowerShell screen
+  # Scrolling bindings
+  { key = "J", mods = "Control|Shift", action = "ScrollLineDown" },
+  { key = "K", mods = "Control|Shift", action = "ScrollLineUp" },
+  { key = "J", mods = "Control", action = "ScrollPageDown", mode = "~AppCursor|~AppKeypad" },
+  { key = "K", mods = "Control", action = "ScrollPageUp", mode = "~AppCursor|~AppKeypad" },
+  # Alternative scrolling bindings
+  { key = "Up", mods = "Control|Shift", action = "ScrollLineUp" },
+  { key = "Down", mods = "Control|Shift", action = "ScrollLineDown" },
+]
+
+# Shell configuration (Defaults to PowerShell)
+[terminal.shell]
+program = "powershell.exe"
+args = ["-NoLogo"]

@@ -1,53 +1,5 @@
-# Working directory
-general.working_directory = "%USERPROFILE%"
-
-[font]
-size = 16
-
-# Cursor Color settings
-[colors.cursor]
-cursor = "0x00ff00" # Green cursor block
-text = "0x000000"   # Black text under the cursor
-
-# Cursor behavior settings
-[cursor]
-blink_interval = 500 # Blink interval in milliseconds
-blink_timeout = 0    # 0 means blink indefinitely
-
-# Cursor style settings
-[cursor.style]
-blinking = "Always" # Cursor always blinks
-shape = "Block"     # Use a block shape for the cursor
-
-# Keyboard bindings
-[keyboard]
-bindings = [
-  # Clears the screen even if characters have already been input
-  # The "linux" labeled one might work in Git Bash, Alt+K may conflict though.
-  { key = "K", mods = "Alt", chars = "\u0015 echo -e \"\\033c\"\r" },
-  # The "mac" labeled one uses Command key, will be ignored on Windows.
-  { key = "K", mods = "Command", chars ="\u0015 echo -e \"\\033c\"\r" },
-  # Scrolling bindings
-  { key = "J", mods = "Control|Shift", action = "ScrollLineDown" },
-  { key = "K", mods = "Control|Shift", action = "ScrollLineUp" },
-  { key = "J", mods = "Control", action = "ScrollPageDown", mode = "~AppCursor|~AppKeypad" },
-  { key = "K", mods = "Control", action = "ScrollPageUp", mode = "~AppCursor|~AppKeypad" },
-  # Alternative scrolling bindings
-  { key = "Up", mods = "Control|Shift", action = "ScrollLineUp" },
-  { key = "Down", mods = "Control|Shift", action = "ScrollLineDown" },
-  # Spawn new instance binding (uses Command key, will be ignored on Windows)
-  { key = 'T', mods = 'Control|Command', action = 'SpawnNewInstance' },
-]
-
-# Mouse bindings
-[[mouse.bindings]]
-action = "Paste" # Right-click to paste
-mouse = "Right"
-
-# Scrolling configuration
-[scrolling]
-history = 10000 # Lines of scrollback history
-multiplier = 10  # Scrolling speed multiplier
+[general]
+import = [".alacritty.base.toml", ".alacritty.shell-bindings.toml"]
 
 # === MODIFIED SECTION FOR WINDOWS GIT BASH ===
 [terminal.shell]
@@ -60,7 +12,3 @@ program = "C:/Program Files/Git/bin/bash.exe"
 # Example using double backslashes:
 # program = "C:\\Program Files\\Git\\bin\\bash.exe"
 # =============================================
-
-# Window settings (option_as_alt is macOS specific and will be ignored on Windows)
-[window]
-option_as_alt = "Both"

@@ -1,0 +1,51 @@
+# Shared Alacritty settings for all environments (Git Bash, WSL, PowerShell).
+# Platform-specific files (.alacritty.git-bash.toml, .alacritty.wsl.toml,
+# .alacritty.ps.toml) import this file via `general.import` and only define
+# the settings that legitimately differ per platform (shell, font, keyboard
+# bindings for shell-specific "clear screen" behavior, etc).
+#
+# NOTE: Alacritty merges tables but REPLACES arrays wholesale on import, so
+# `[keyboard].bindings` / `[[keyboard.bindings]]` cannot live here if any
+# platform needs to override even a single entry. See
+# .alacritty.shell-bindings.toml for the bindings shared by Git Bash & WSL.
+
+# NOTE: Alacritty does NOT expand Windows-style "%VAR%" (or "~") in TOML
+# string values, so a literal `general.working_directory = "%USERPROFILE%"`
+# fails at startup with `Error: Os { code: 267, kind: NotADirectory, ... }`
+# (it tries to cd into a folder literally named "%USERPROFILE%"). Each
+# platform config instead sets the shell's own startup directory: Git Bash
+# and WSL do it via shell args (`--login`, `--cd ~`), and the PowerShell
+# hotkey passes `--working-directory` explicitly. So no working_directory
+# is set here.
+
+[font]
+size = 16
+
+# Cursor Color settings
+[colors.cursor]
+cursor = "0x00ff00" # Green cursor block
+text = "0x000000"   # Black text under the cursor
+
+# Cursor behavior settings
+[cursor]
+blink_interval = 500 # Blink interval in milliseconds
+blink_timeout = 0    # 0 means blink indefinitely
+
+# Cursor style settings
+[cursor.style]
+blinking = "Always" # Cursor always blinks
+shape = "Block"     # Use a block shape for the cursor
+
+# Mouse bindings
+[[mouse.bindings]]
+action = "Paste" # Right-click to paste
+mouse = "Right"
+
+# Scrolling configuration
+[scrolling]
+history = 10000 # Lines of scrollback history
+multiplier = 10  # Scrolling speed multiplier
+
+# Window settings (option_as_alt is macOS specific and will be ignored on Windows)
+[window]
+option_as_alt = "Both"

@@ -132,5 +132,8 @@ StrJoin(arr, delim := "`n") {
 userProfile := EnvGet("USERPROFILE")
 alacrittyExe := userProfile . "\Applications\Alacritty.exe"
 configPath := userProfile . "\dotfiles-windows\.alacritty.ps.toml"
-RUN('"' . alacrittyExe . '" --config-file "' . configPath . '"')
+; Without --working-directory, Alacritty inherits this script's own
+; working directory (SetWorkingDir A_ScriptDir, i.e. the dotfiles-windows
+; repo folder) instead of opening in $HOME.
+RUN('"' . alacrittyExe . '" --config-file "' . configPath . '" --working-directory "' . userProfile . '"', userProfile)
 }

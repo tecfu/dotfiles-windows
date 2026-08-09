@@ -1,0 +1,23 @@
+# Keyboard bindings shared by the bash-based shells (Git Bash and WSL).
+# Kept separate from .alacritty.base.toml because Alacritty replaces the
+# entire `bindings` array on import instead of merging entries - any
+# platform that needs its own "clear screen" binding (e.g. PowerShell) must
+# define a complete bindings array of its own instead of importing this file.
+[keyboard]
+bindings = [
+  # Clears the screen even if characters have already been input
+  # The "linux" labeled one might work in Git Bash, Alt+K may conflict though.
+  { key = "K", mods = "Alt", chars = "\u0015 echo -e \"\\033c\"\r" },
+  # The "mac" labeled one uses Command key, will be ignored on Windows.
+  { key = "K", mods = "Command", chars ="\u0015 echo -e \"\\033c\"\r" },
+  # Scrolling bindings
+  { key = "J", mods = "Control|Shift", action = "ScrollLineDown" },
+  { key = "K", mods = "Control|Shift", action = "ScrollLineUp" },
+  { key = "J", mods = "Control", action = "ScrollPageDown", mode = "~AppCursor|~AppKeypad" },
+  { key = "K", mods = "Control", action = "ScrollPageUp", mode = "~AppCursor|~AppKeypad" },
+  # Alternative scrolling bindings
+  { key = "Up", mods = "Control|Shift", action = "ScrollLineUp" },
+  { key = "Down", mods = "Control|Shift", action = "ScrollLineDown" },
+  # Spawn new instance binding (uses Command key, will be ignored on Windows)
+  { key = 'T', mods = 'Control|Command', action = 'SpawnNewInstance' },
+]

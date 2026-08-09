@@ -1,0 +1,7 @@
+# Force LF line endings for POSIX shell files regardless of core.autocrlf,
+# since Git Bash / WSL bash fail to parse them with CRLF endings
+# (e.g. "syntax error near unexpected token $'{\r'").
+*.sh text eol=lf
+.bashrc text eol=lf
+.inputrc text eol=lf
+bashmarks.plugin.sh text eol=lf
