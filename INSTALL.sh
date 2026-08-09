@@ -40,6 +40,44 @@ render_bashrc() {
     sed "s#__DOTFILES_REPO_DIR__#$REPO_DIR#g" "$src" > "$dest"
 }
 
+# profile.ps1 dot-sources bashmarks.plugin.ps1 from the repo it lives in,
+# and (like .bashrc) can't discover that path at runtime, since PowerShell's
+# $PSScriptRoot reflects wherever $PROFILE itself is (e.g. under a
+# OneDrive-redirected Documents folder), not this repo. So render it the
+# same way render_bashrc() does, baking in the absolute repo path.
+#
+# PowerShell accepts forward slashes in paths just fine, so the baked-in
+# path uses `cygpath -m` (forward slashes) rather than `cygpath -w`
+# (backslashes) - this avoids having to escape backslashes for sed's
+# replacement text.
+render_ps_profile() {
+    local src="$1"
+
+    if ! command -v powershell.exe >/dev/null 2>&1; then
+        echo "powershell.exe not found, skipping PowerShell profile install"
+        return
+    fi
+
+    local ps_profile_win ps_profile
+    ps_profile_win="$(powershell.exe -NoProfile -NonInteractive -Command '$PROFILE' | tr -d '\r')"
+    ps_profile="$(cygpath -u "$ps_profile_win")"
+
+    local dest_dir
+    dest_dir="$(dirname "$ps_profile")"
+    if [ ! -d "$dest_dir" ]; then
+        echo "Creating directory $dest_dir"
+        mkdir -p "$dest_dir"
+    fi
+
+    if [ -e "$ps_profile" ] || [ -L "$ps_profile" ]; then
+        echo "Backing up existing $ps_profile to ${ps_profile}.bak"
+        mv "$ps_profile" "${ps_profile}.bak"
+    fi
+
+    echo "Rendering $src to $ps_profile"
+    sed "s#__DOTFILES_REPO_DIR__#$(cygpath -m "$REPO_DIR")#g" "$src" > "$ps_profile"
+}
+
 # Alacritty's `general.import` resolves relative paths (e.g.
 # ".alacritty.base.toml") relative to the directory the config file is
 # *found* in - if the config is a symlink, that means the symlink's own
@@ -173,6 +211,8 @@ else
     render_alacritty_config "$REPO_DIR/.alacritty.ps.toml" "$HOME/.config/alacritty/alacritty.ps.toml"
     # 5. Point the "Git Bash" Start Menu shortcut at Alacritty
     update_git_bash_shortcut
+    # 6. Install the PowerShell profile (bashmarks + vi-mode PSReadLine config)
+    render_ps_profile "$REPO_DIR/profile.ps1"
 fi
 
 echo ""

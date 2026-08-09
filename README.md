@@ -2,7 +2,7 @@
 
 ## Installation
 
-To install the configuration files (`.bashrc`, `.inputrc`, `alacritty.toml`) and `oh-my-bash`:
+To install the configuration files (`.bashrc`, `.inputrc`, `alacritty.toml`), the PowerShell profile (bashmarks + vi-mode PSReadLine config), and `oh-my-bash`:
 
 1. Open Git Bash in this repository's directory.
 2. Run the installation script:
@@ -13,9 +13,20 @@ To install the configuration files (`.bashrc`, `.inputrc`, `alacritty.toml`) and
    - Backup your existing configuration files (appending `.bak`).
    - Create symlinks to the files in this repository.
    - Install [oh-my-bash](https://github.com/ohmybash/oh-my-bash) if it is not already installed.
+   - Render `profile.ps1` to your real PowerShell `$PROFILE` path (baking in
+     this repo's absolute path so it can dot-source `bashmarks.plugin.ps1`).
    - On native Windows (not WSL), repoint the Start Menu "Git Bash" shortcut
      at Alacritty, so opening "Git Bash" launches bash inside Alacritty
      instead of the default mintty window (see Alacritty Configuration below).
+
+## Bashmarks
+
+`bm`/`s`/`g`/`p`/`d` (save/goto/print/delete directory bookmarks) work the
+same way in both Git Bash and PowerShell, and share the same bookmark file
+(`~/.sdirs`), so a bookmark saved in one shell is immediately available in
+the other. The bash version is `bashmarks.plugin.sh` (sourced from
+`.bashrc`); the PowerShell port is `bashmarks.plugin.ps1` (dot-sourced from
+`profile.ps1`).
 
 ## Alacritty Configuration
 

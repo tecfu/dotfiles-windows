@@ -1,4 +1,16 @@
 # ==========================================
+# Bashmarks
+# ==========================================
+
+# Repo directory, baked in by INSTALL.sh at install time (see
+# render_ps_profile), the same way .bashrc bakes in its repo path - this
+# profile is rendered to a copy under $PROFILE, not run in place, so it
+# can't rely on $PSScriptRoot to find bashmarks.plugin.ps1.
+$_dotfilesDir = "__DOTFILES_REPO_DIR__"
+. "$_dotfilesDir/bashmarks.plugin.ps1"
+Remove-Variable _dotfilesDir
+
+# ==========================================
 # Neovim Setup
 # ==========================================
 
