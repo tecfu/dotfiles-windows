@@ -121,3 +121,12 @@ $resetTerminal = {
 }
 Set-PSReadLineKeyHandler -Chord 'Alt+k' -ViMode Insert -ScriptBlock $resetTerminal
 Set-PSReadLineKeyHandler -Chord 'Alt+k' -ViMode Command -ScriptBlock $resetTerminal
+
+# ==========================================
+# Reload Path
+# ==========================================
+# Refresh $env:Path from the registry (Machine + User) without restarting
+# the shell - useful after installing something that updates PATH.
+function Reload-Path {
+    $env:Path = [Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [Environment]::GetEnvironmentVariable("Path","User")
+}
