@@ -100,3 +100,24 @@ Set-PSReadLineKeyHandler -Chord 'DownArrow' -ViMode Insert -Function HistorySear
 # Word navigation
 Set-PSReadLineKeyHandler -Chord 'Ctrl+h' -ViMode Insert -Function ShellBackwardWord
 Set-PSReadLineKeyHandler -Chord 'Ctrl+l' -ViMode Insert -Function ShellForwardWord
+
+# ==========================================
+# 7. Terminal Reset (Alt+K)
+# ==========================================
+
+# Alacritty used to send a raw Ctrl+L char for Alt+K, relying on PSReadLine's
+# default Ctrl+L->ClearScreen binding - but Ctrl+l is rebound to
+# ShellForwardWord in Vi Insert mode above, which silently broke that trick.
+# Bind Alt+K directly instead, and do a real terminal reset (matching the
+# bash Alt+K binding, which runs `echo -e "\033c"`) rather than just
+# PSReadLine's ClearScreen, which only clears the screen/scrollback and
+# doesn't reset terminal modes left in a bad state (e.g. after cat-ing
+# binary data). "\033c" is the ANSI RIS (Reset to Initial State) sequence.
+# Requires Alacritty to forward Alt+K as a normal Alt/meta keypress instead
+# of intercepting it (see .alacritty.ps.toml).
+$resetTerminal = {
+    [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+    [Console]::Out.Write("$([char]27)c")
+}
+Set-PSReadLineKeyHandler -Chord 'Alt+k' -ViMode Insert -ScriptBlock $resetTerminal
+Set-PSReadLineKeyHandler -Chord 'Alt+k' -ViMode Command -ScriptBlock $resetTerminal
