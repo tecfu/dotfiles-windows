@@ -1,3 +1,12 @@
+# $EDITOR/$VISUAL: used by ble.sh's vi-mode "edit-and-execute-command"
+# widget (see the `v` rebinding below) to open the current command line in
+# an external editor - the WSL/bash counterpart to profile.ps1's PSReadLine
+# "v" handler. Use WSL-native vim rather than the Windows nvim.exe (aliased
+# below as `nvim`): nvim.exe lives under the Windows user's home, not
+# WSL's $HOME, so it 404s here; vim is installed natively in the WSL distro.
+export EDITOR="vim"
+export VISUAL="$EDITOR"
+
 # WSL auto-appends the full Windows PATH via interop, including several
 # /mnt/c/... directories. Those live on the 9p network filesystem and are
 # extremely slow to stat/list (~600ms+ vs ~2ms for native ext4 dirs), and
@@ -89,6 +98,14 @@ if [ -r "$HOME/.local/share/blesh/ble.sh" ]; then
     ble-bind -m menu_complete -f 'C-[' 'tab-complete/esc-clear-menu'
     ble-bind -m auto_complete -f 'ESC'  'tab-complete/esc-clear'
     ble-bind -m auto_complete -f 'C-[' 'tab-complete/esc-clear'
+
+    # By default ble.sh's vi-command keymap implements real vim behavior,
+    # where "v" enters character-wise VISUAL (selection) mode - unlike
+    # plain bash/readline vi mode, where "v" runs edit-and-execute-command
+    # (opens $VISUAL/$EDITOR on the command line, then runs it on save).
+    # Rebind "v" to that widget so it matches the "v" behavior configured
+    # for PSReadLine's vi-mode in profile.ps1 instead of showing "VISUAL".
+    ble-bind -m vi_nmap -f 'v' 'vi-command/edit-and-execute-command'
 fi
 
 # Repo directory, baked in by INSTALL.sh at install time (see render_bashrc).
