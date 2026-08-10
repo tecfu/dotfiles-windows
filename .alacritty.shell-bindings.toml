@@ -3,6 +3,13 @@
 # entire `bindings` array on import instead of merging entries - any
 # platform that needs its own "clear screen" binding (e.g. PowerShell) must
 # define a complete bindings array of its own instead of importing this file.
+#
+# NOTE: Plain Ctrl+J / Ctrl+K page-scroll bindings are gated on
+# `mode = "~Alt"` (see .alacritty.ps.toml for the full explanation) - this
+# keeps them working at the plain shell prompt (primary screen) while
+# letting them pass through untouched to full-screen apps like Neovim,
+# which switch to the terminal's alternate screen buffer on startup.
+# Alacritty's binding mode for that state is named "Alt", not "AltScreen".
 [keyboard]
 bindings = [
   # Clears the screen even if characters have already been input
@@ -13,8 +20,8 @@ bindings = [
   # Scrolling bindings
   { key = "J", mods = "Control|Shift", action = "ScrollLineDown" },
   { key = "K", mods = "Control|Shift", action = "ScrollLineUp" },
-  { key = "J", mods = "Control", action = "ScrollPageDown", mode = "~AppCursor|~AppKeypad" },
-  { key = "K", mods = "Control", action = "ScrollPageUp", mode = "~AppCursor|~AppKeypad" },
+  { key = "J", mods = "Control", action = "ScrollPageDown", mode = "~Alt" },
+  { key = "K", mods = "Control", action = "ScrollPageUp", mode = "~Alt" },
   # Alternative scrolling bindings
   { key = "Up", mods = "Control|Shift", action = "ScrollLineUp" },
   { key = "Down", mods = "Control|Shift", action = "ScrollLineDown" },

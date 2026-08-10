@@ -39,13 +39,32 @@ white   = "#a9b1d6"
 # a real terminal reset; that only works if Alacritty forwards the Alt+K
 # keypress through to PowerShell unmodified (as its default Alt/meta
 # encoding) instead of substituting a raw Ctrl+L char here.
+#
+# NOTE: Plain Ctrl+J / Ctrl+K page-scroll bindings are gated on
+# `mode = "~Alt"` rather than left unbound. Alacritty intercepts key
+# bindings at the terminal-emulator layer, before the keypress ever reaches
+# the shell or a program running inside it, so an unconditional Ctrl+J/K
+# binding silently ate those chords in Neovim (used for window navigation)
+# regardless of which shell was running. The earlier
+# `mode = "~AppCursor|~AppKeypad"` guard didn't help, because Neovim's
+# normal buffer view doesn't enable either of those DEC modes. Full-screen
+# programs like Neovim, less, and htop *do* switch to the terminal's
+# "alternate screen" buffer (DEC mode 1049) on startup, and Alacritty's
+# binding mode for that state is named "Alt" (NOT "AltScreen" - that name
+# doesn't exist and produces a config error), which is exactly when
+# Ctrl+J/K should pass through untouched instead of scrolling Alacritty's
+# own scrollback - so `~Alt` is the correct guard: the binding is active at
+# the plain PowerShell prompt (primary screen) and automatically steps
+# aside once an alternate-screen app is running. Confirmed against
+# Alacritty 0.17's own default bindings (e.g. Shift+PageUp uses
+# `mode = "~Alt"` for the same purpose).
 [keyboard]
 bindings = [
   # Scrolling bindings
   { key = "J", mods = "Control|Shift", action = "ScrollLineDown" },
   { key = "K", mods = "Control|Shift", action = "ScrollLineUp" },
-  { key = "J", mods = "Control", action = "ScrollPageDown", mode = "~AppCursor|~AppKeypad" },
-  { key = "K", mods = "Control", action = "ScrollPageUp", mode = "~AppCursor|~AppKeypad" },
+  { key = "J", mods = "Control", action = "ScrollPageDown", mode = "~Alt" },
+  { key = "K", mods = "Control", action = "ScrollPageUp", mode = "~Alt" },
   # Alternative scrolling bindings
   { key = "Up", mods = "Control|Shift", action = "ScrollLineUp" },
   { key = "Down", mods = "Control|Shift", action = "ScrollLineDown" },
