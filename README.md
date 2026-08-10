@@ -28,6 +28,43 @@ the other. The bash version is `bashmarks.plugin.sh` (sourced from
 `.bashrc`); the PowerShell port is `bashmarks.plugin.ps1` (dot-sourced from
 `profile.ps1`).
 
+## Predictions / Tab Completion
+
+Both shells are configured with inline "ghost text" suggestions (based on
+command history) plus vi-mode-aware Tab completion, so the experience is
+consistent whether you're in PowerShell or WSL/Git Bash.
+
+### PowerShell
+
+- Configured in `profile.ps1` via **PSReadLine** (requires PSReadLine 2.2+;
+  installed/upgraded automatically by `INSTALL.sh`'s `ensure_ps_readline`,
+  since Windows PowerShell 5.1 only ships 2.0.0 built in).
+- `Set-PSReadLineOption -PredictionSource History -PredictionViewStyle InlineView`
+  enables the gray inline suggestion as you type.
+- `Tab` (vi Insert mode) is bound to a custom handler: it accepts the
+  inline suggestion if one is showing, otherwise falls back to normal vi
+  tab-completion (paths, commands, parameters).
+- `v` (vi Command mode) is bound to `ViEditVisually`, which opens the
+  current command line in nvim (`$env:VISUAL`/`$env:EDITOR`) for editing,
+  mirroring bash vi-mode's `v` key.
+
+### WSL / Git Bash
+
+- Configured in `.bashrc` via **[ble.sh](https://github.com/akinomyoga/ble.sh)**
+  (Bash Line Editor), which replaces GNU Readline with inline ghost-text
+  suggestions from history, syntax highlighting, and vi-mode support.
+- Installed to `~/.local/share/blesh` by `INSTALL.sh`'s `ensure_ble_sh`
+  (WSL only - it needs `make`/`gawk`, which Git Bash on native Windows
+  doesn't provide; `.bashrc`'s `[ -r ... ]` file check makes it a no-op
+  there instead of an error).
+- Vi mode is picked up automatically from `.inputrc`'s
+  `set editing-mode vi` - no separate ble.sh vi-mode config is needed.
+- `Tab` (vi Insert mode) already triggers completion via ble.sh's own
+  default `vi_imap` binding (`ble-bind -f 'TAB' 'vi_imap/complete'`).
+- Per ble.sh's own setup instructions, it's sourced near the top of
+  `.bashrc` (`--attach=none`) and attached (`ble-attach`) at the very end,
+  after all other `.bashrc` customization.
+
 ## Alacritty Configuration
 
 Install Alacritty at `~/Applications/Alacritty.exe` (this path is not on

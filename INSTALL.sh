@@ -108,6 +108,35 @@ ensure_ps_readline() {
     ' | tr -d '\r'
 }
 
+# .bashrc's ble.sh block (bash counterpart to profile.ps1's PSReadLine
+# predictive IntelliSense - inline "ghost text" suggestions from history,
+# plus vi-mode-aware Tab completion) only activates if ble.sh is actually
+# present at ~/.local/share/blesh/ble.sh, so install it there if missing.
+# Requires `make` and `gawk` to build, which WSL Ubuntu ships with but Git
+# Bash on native Windows does not - so this is WSL-only; .bashrc's file
+# existence check makes it a harmless no-op on Git Bash.
+ensure_ble_sh() {
+    local blesh_dest="$HOME/.local/share/blesh/ble.sh"
+
+    if [ -r "$blesh_dest" ]; then
+        echo "ble.sh is already installed at $blesh_dest"
+        return
+    fi
+
+    if ! command -v make >/dev/null 2>&1 || ! command -v gawk >/dev/null 2>&1; then
+        echo "make/gawk not found, skipping ble.sh install"
+        return
+    fi
+
+    echo "Installing ble.sh..."
+    local ble_src
+    ble_src="$(mktemp -d)/ble.sh"
+    git clone --recursive --depth 1 --shallow-submodules \
+        https://github.com/akinomyoga/ble.sh.git "$ble_src"
+    make -C "$ble_src" install PREFIX="$HOME/.local"
+    rm -rf "$ble_src"
+}
+
 # Alacritty's `general.import` resolves relative paths (e.g.
 # ".alacritty.base.toml") relative to the directory the config file is
 # *found* in - if the config is a symlink, that means the symlink's own
@@ -233,6 +262,8 @@ if is_wsl; then
     echo "Detected WSL environment"
     # .alacritty.wsl.toml goes in $HOME/.alacritty.toml for `alacritty -c ~/.alacritty.toml`
     render_alacritty_config "$REPO_DIR/.alacritty.wsl.toml" "$HOME/.alacritty.toml"
+    # 5. Install ble.sh (bash predictive IntelliSense + vi-mode Tab completion)
+    ensure_ble_sh
 else
     echo "Detected Git Bash / native Windows environment"
     # .alacritty.git-bash.toml goes in $HOME/.alacritty.toml for Git Bash
