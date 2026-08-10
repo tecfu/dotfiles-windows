@@ -21,12 +21,35 @@ $env:VIMINIT = 'source ~/.vim/init.vim'
 # Alias 'nvim' directly to the executable
 Set-Alias -Name nvim -Value "$HOME\Applications\nvim-win64\bin\nvim.exe"
 
+# Alias 'vim' to the same neovim executable (no vim binary on Windows)
+Set-Alias -Name vim -Value "$HOME\Applications\nvim-win64\bin\nvim.exe"
+
+# Used by PSReadLine's ViEditVisually (the 'v' key in vi command mode) to
+# know which editor to launch on the current command line.
+$env:VISUAL = "$HOME\Applications\nvim-win64\bin\nvim.exe"
+$env:EDITOR = $env:VISUAL
+
 # ==========================================
 # PSReadLine Vi Mode Configuration
 # ==========================================
 
+# ViEditVisually (needed for the 'v' key handler below) requires PSReadLine
+# 2.2+; the version bundled with Windows PowerShell 5.1 is 2.0.0 and hangs
+# the terminal when an interactive console app is launched from a key
+# handler. Load the newer module explicitly (installed via
+# `Install-Module PSReadLine -Scope CurrentUser`).
+Import-Module PSReadLine -MinimumVersion 2.2.0 -Force -ErrorAction SilentlyContinue
+
 # 1. Enable Vi Mode
 Set-PSReadLineOption -EditMode Vi
+
+# 1a. Predictive IntelliSense: inline "ghost text" suggestions from history.
+# Wrapped in try/catch since hosts without VT support (e.g. redirected
+# output, some remoting sessions) throw when enabling this.
+try {
+    Set-PSReadLineOption -PredictionSource History
+    Set-PSReadLineOption -PredictionViewStyle InlineView
+} catch {}
 
 # 2. Configure the Mode Indicator to use a Script
 Set-PSReadLineOption -ViModeIndicator Script
@@ -89,6 +112,14 @@ Set-PSReadLineKeyHandler -Chord 'c,Spacebar' -ViMode Command -ScriptBlock {
     }
 }
 
+# --- Edit-and-execute-command (mirrors bash vi-mode 'v') ---
+# Opens the current command line in $env:VISUAL/$env:EDITOR (nvim); on
+# save+quit, the edited line replaces the buffer, matching bash's 'v' in
+# vi command mode. Requires PSReadLine 2.2+ (see Import-Module above) -
+# on 2.0.0 this hangs the terminal because it can't hand off the console
+# to an interactive child process from within a key handler.
+Set-PSReadLineKeyHandler -Chord 'v' -ViMode Command -Function ViEditVisually
+
 # ==========================================
 # 6. Key Mappings (Vi-Insert Mode)
 # ==========================================
@@ -100,6 +131,25 @@ Set-PSReadLineKeyHandler -Chord 'DownArrow' -ViMode Insert -Function HistorySear
 # Word navigation
 Set-PSReadLineKeyHandler -Chord 'Ctrl+h' -ViMode Insert -Function ShellBackwardWord
 Set-PSReadLineKeyHandler -Chord 'Ctrl+l' -ViMode Insert -Function ShellForwardWord
+
+# Tab: accept the inline predictive suggestion (ghost text) if one is
+# showing; otherwise fall back to normal vi tab-completion. We detect
+# "nothing to accept" by checking whether the buffer actually changed.
+Set-PSReadLineKeyHandler -Chord 'Tab' -ViMode Insert -ScriptBlock {
+    param($key, $arg)
+
+    $lineBefore = $null; $cursorBefore = $null
+    [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$lineBefore, [ref]$cursorBefore)
+
+    [Microsoft.PowerShell.PSConsoleReadLine]::AcceptSuggestion($key, $arg)
+
+    $lineAfter = $null; $cursorAfter = $null
+    [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$lineAfter, [ref]$cursorAfter)
+
+    if ($lineAfter -eq $lineBefore -and $cursorAfter -eq $cursorBefore) {
+        [Microsoft.PowerShell.PSConsoleReadLine]::ViTabCompleteNext($key, $arg)
+    }
+}
 
 # ==========================================
 # 7. Terminal Reset (Alt+K)

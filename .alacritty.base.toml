@@ -19,7 +19,7 @@
 # is set here.
 
 [font]
-size = 16
+size = 11
 
 # Cursor Color settings
 [colors.cursor]

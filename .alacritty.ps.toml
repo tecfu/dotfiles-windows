@@ -59,7 +59,13 @@ white   = "#a9b1d6"
 # Alacritty 0.17's own default bindings (e.g. Shift+PageUp uses
 # `mode = "~Alt"` for the same purpose).
 [keyboard]
+# NOTE: Defining a `keyboard.bindings` array replaces ALL of Alacritty's
+# built-in default bindings (there's no merge option) - so Copy/Paste must
+# be explicitly re-added here or Ctrl+Shift+C/V silently stop working.
 bindings = [
+  # Re-add the defaults lost by defining this array (see note above)
+  { key = "V", mods = "Control|Shift", action = "Paste" },
+  { key = "C", mods = "Control|Shift", action = "Copy" },
   # Scrolling bindings
   { key = "J", mods = "Control|Shift", action = "ScrollLineDown" },
   { key = "K", mods = "Control|Shift", action = "ScrollLineUp" },

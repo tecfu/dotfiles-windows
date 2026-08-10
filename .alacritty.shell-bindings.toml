@@ -11,7 +11,13 @@
 # which switch to the terminal's alternate screen buffer on startup.
 # Alacritty's binding mode for that state is named "Alt", not "AltScreen".
 [keyboard]
+# NOTE: Defining a `keyboard.bindings` array replaces ALL of Alacritty's
+# built-in default bindings (there's no merge option) - so Copy/Paste must
+# be explicitly re-added here or Ctrl+Shift+C/V silently stop working.
 bindings = [
+  # Re-add the defaults lost by defining this array (see note above)
+  { key = "V", mods = "Control|Shift", action = "Paste" },
+  { key = "C", mods = "Control|Shift", action = "Copy" },
   # Clears the screen even if characters have already been input
   # The "linux" labeled one might work in Git Bash, Alt+K may conflict though.
   { key = "K", mods = "Alt", chars = "\u0015 echo -e \"\\033c\"\r" },

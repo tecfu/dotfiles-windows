@@ -78,6 +78,36 @@ render_ps_profile() {
     sed "s#__DOTFILES_REPO_DIR__#$(cygpath -m "$REPO_DIR")#g" "$src" > "$ps_profile"
 }
 
+# profile.ps1 requires PSReadLine 2.2+ (for ViEditVisually - the 'v' vi-mode
+# editor binding - and predictive IntelliSense). Windows PowerShell 5.1
+# ships PSReadLine 2.0.0 built in, which lacks both, so install a newer
+# version into the CurrentUser scope alongside it (profile.ps1 loads it
+# explicitly via `Import-Module PSReadLine -MinimumVersion 2.2.0 -Force`).
+ensure_ps_readline() {
+    if ! command -v powershell.exe >/dev/null 2>&1; then
+        echo "powershell.exe not found, skipping PSReadLine install"
+        return
+    fi
+
+    echo "Ensuring PSReadLine >= 2.2.0 is installed for PowerShell"
+    powershell.exe -NoProfile -NonInteractive -Command '
+        $ErrorActionPreference = "Stop"
+        $minVersion = [Version]"2.2.0"
+        $installed = Get-Module PSReadLine -ListAvailable | Sort-Object Version -Descending | Select-Object -First 1
+        if ($installed -and $installed.Version -ge $minVersion) {
+            Write-Output "PSReadLine $($installed.Version) already installed"
+            return
+        }
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        if (-not (Get-PackageProvider -Name NuGet -ListAvailable -ErrorAction SilentlyContinue)) {
+            Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Scope CurrentUser | Out-Null
+        }
+        Install-Module -Name PSReadLine -MinimumVersion $minVersion -Force -Scope CurrentUser -AllowClobber -SkipPublisherCheck
+        $installed = Get-Module PSReadLine -ListAvailable | Sort-Object Version -Descending | Select-Object -First 1
+        Write-Output "Installed PSReadLine $($installed.Version)"
+    ' | tr -d '\r'
+}
+
 # Alacritty's `general.import` resolves relative paths (e.g.
 # ".alacritty.base.toml") relative to the directory the config file is
 # *found* in - if the config is a symlink, that means the symlink's own
@@ -212,6 +242,7 @@ else
     # 5. Point the "Git Bash" Start Menu shortcut at Alacritty
     update_git_bash_shortcut
     # 6. Install the PowerShell profile (bashmarks + vi-mode PSReadLine config)
+    ensure_ps_readline
     render_ps_profile "$REPO_DIR/profile.ps1"
 fi
 
