@@ -1,31 +1,31 @@
-#NoEnv  ; Recommended for performance and compatibility.
+#SingleInstance Force
 #Warn   ; Enable warnings to assist with detecting common errors.
-SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
+SendMode "Input"  ; Recommended for new scripts due to its superior speed and reliability.
 
 ;-----------------------------------------
 ; CapsLock <-> Escape Swap
 ;-----------------------------------------
 $Capslock::Esc
-$Esc::
+$Esc:: {
     if GetKeyState("CapsLock", "T")
-        SetCapsLockState, Off
+        SetCapsLockState "Off"
     else
-        SetCapsLockState, On
-Return
+        SetCapsLockState "On"
+}
 
 
 ;-----------------------------------------
 ; Map Ctrl+Q to close the ACTIVE window
 ;-----------------------------------------
-^q::
-    WinClose, A ; 'A' refers to the active window
-Return
+^q:: {
+    WinClose "A" ; 'A' refers to the active window
+}
 
 
 ;-----------------------------------------
 ; Map Ctrl+Shift+4 to Win+Shift+S
 ; (Often used to trigger Windows Snipping Tool with an alternative shortcut)
 ;-----------------------------------------
-$^+4:: ; Use $ to prevent self-triggering if Send involves the hotkey's own modifiers
-    Send, #+s
-Return
+$^+4:: { ; Use $ to prevent self-triggering if Send involves the hotkey's own modifiers
+    Send "#+s"
+}

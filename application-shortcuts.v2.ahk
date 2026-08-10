@@ -110,25 +110,12 @@ StrJoin(arr, delim := "`n") {
 }
 
 ;===========================================================
-; Shift+Ctrl+Alt+T -> Alacritty (WSL/Linux)
+; Shift+Ctrl+Alt+T -> Alacritty (Windows PowerShell)
 ;
-; Uses config: ~/dotfiles-windows/.alacritty.toml
+; Uses config: %USERPROFILE%\dotfiles-windows\.alacritty.ps.toml
 ;===========================================================
 
-^!+t::{
-    ; A_UserName is a built-in variable for the current Windows user
-    Run("wsl.exe LIBGL_ALWAYS_SOFTWARE=1 alacritty --config-file /mnt/c/Users/" . A_UserName . "/dotfiles-windows/.alacritty.wsl.toml")
-}
-
-;===========================================================
-; Ctrl+Alt+T -> Alacritty (Windows)
-;
-; Uses config: %USERPROFILE%\dotfiles-windows.alacritty.ps.toml
-;===========================================================
-; ==================== Alacritty Hotkey ====================
-; Ctrl+Alt+T → Open / Focus Alacritty
-
-^!t:: {
+^!+t:: {
 userProfile := EnvGet("USERPROFILE")
 alacrittyExe := userProfile . "\Applications\Alacritty.exe"
 configPath := userProfile . "\dotfiles-windows\.alacritty.ps.toml"
@@ -136,4 +123,42 @@ configPath := userProfile . "\dotfiles-windows\.alacritty.ps.toml"
 ; working directory (SetWorkingDir A_ScriptDir, i.e. the dotfiles-windows
 ; repo folder) instead of opening in $HOME.
 RUN('"' . alacrittyExe . '" --config-file "' . configPath . '" --working-directory "' . userProfile . '"', userProfile)
+}
+
+;===========================================================
+; Ctrl+Alt+T -> Alacritty (Git Bash)
+;
+; Uses config: %USERPROFILE%\.alacritty.toml (rendered by INSTALL.sh from
+; .alacritty.git-bash.toml - see note below)
+;===========================================================
+; ==================== Alacritty Hotkey ====================
+; Ctrl+Alt+T → Open / Focus Alacritty (Git Bash)
+
+^!t:: {
+userProfile := EnvGet("USERPROFILE")
+alacrittyExe := userProfile . "\Applications\Alacritty.exe"
+; Must use the *rendered* config at ~/.alacritty.toml, not the raw repo
+; file .alacritty.git-bash.toml directly: INSTALL.sh's
+; render_alacritty_config() rewrites that file's placeholder
+; "C:/Program Files/Git/bin/bash.exe" `program` path to the actual
+; bash.exe location on this machine (e.g. under AppData\Local\Programs\Git
+; if Git wasn't installed to the Program Files default). Pointing at the
+; raw repo file meant Alacritty tried to launch a bash.exe that doesn't
+; exist there, failed immediately, and the window closed right away.
+configPath := userProfile . "\.alacritty.toml"
+; Without --working-directory, Alacritty inherits this script's own
+; working directory (SetWorkingDir A_ScriptDir, i.e. the dotfiles-windows
+; repo folder) instead of opening in $HOME.
+RUN('"' . alacrittyExe . '" --config-file "' . configPath . '" --working-directory "' . userProfile . '"', userProfile)
+}
+
+;===========================================================
+; Ctrl+Alt+W -> Alacritty (WSL/Linux)
+;
+; Uses config: ~/dotfiles-windows/.alacritty.wsl.toml
+;===========================================================
+
+^!w:: {
+    ; A_UserName is a built-in variable for the current Windows user
+    Run("wsl.exe LIBGL_ALWAYS_SOFTWARE=1 alacritty --config-file /mnt/c/Users/" . A_UserName . "/dotfiles-windows/.alacritty.wsl.toml")
 }

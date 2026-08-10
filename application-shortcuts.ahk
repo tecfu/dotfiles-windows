@@ -115,17 +115,53 @@ Return
 Return
 
 ;===========================================================
-; Ctrl+Alt+T -> Alacritty (WSL/Linux)
+; Ctrl+Alt+T -> Alacritty (Git Bash)
 ;
 ; Uses:
-;   ~/.alacritty.toml
+;   %USERPROFILE%\.alacritty.toml (rendered by INSTALL.sh from
+;   .alacritty.git-bash.toml - see note below)
 ;===========================================================
 ^!t::
-    Run, wsl.exe alacritty -c ~/.alacritty.toml
+    EnvGet, UserProfile, USERPROFILE
+
+    alacritty := UserProfile . "\Applications\Alacritty.exe"
+    ; Must use the *rendered* config at ~/.alacritty.toml, not the raw repo
+    ; file .alacritty.git-bash.toml directly: INSTALL.sh's
+    ; render_alacritty_config() rewrites that file's placeholder
+    ; "C:/Program Files/Git/bin/bash.exe" `program` path to the actual
+    ; bash.exe location on this machine (e.g. under AppData\Local\Programs\Git
+    ; if Git wasn't installed to the Program Files default). Pointing at the
+    ; raw repo file means Alacritty tries to launch a bash.exe that doesn't
+    ; exist there, fails immediately, and the window closes right away.
+    config := UserProfile . "\.alacritty.toml"
+
+    if !FileExist(alacritty) {
+        MsgBox, 16, Alacritty, Alacritty executable not found.`n`n%alacritty%
+        Return
+    }
+
+    if !FileExist(config) {
+        MsgBox, 16, Alacritty, Configuration file not found.`n`n%config%
+        Return
+    }
+
+    cmd := """" . alacritty . """ --config-file """ . config . """ --working-directory """ . UserProfile . """"
+
+    Run, %cmd%, %UserProfile%
 Return
 
 ;===========================================================
-; Ctrl+Alt+Shift+T -> Alacritty (Windows)
+; Ctrl+Alt+W -> Alacritty (WSL/Linux)
+;
+; Uses:
+;   ~/dotfiles-windows/.alacritty.wsl.toml
+;===========================================================
+^!w::
+    Run, wsl.exe LIBGL_ALWAYS_SOFTWARE=1 alacritty --config-file /mnt/c/Users/%A_UserName%/dotfiles-windows/.alacritty.wsl.toml
+Return
+
+;===========================================================
+; Ctrl+Alt+Shift+T -> Alacritty (Windows PowerShell)
 ;
 ; Uses:
 ;   %USERPROFILE%\.config\alacritty\alacritty.ps.toml

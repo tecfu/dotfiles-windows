@@ -25,8 +25,15 @@ Set-Alias -Name nvim -Value "$HOME\Applications\nvim-win64\bin\nvim.exe"
 Set-Alias -Name vim -Value "$HOME\Applications\nvim-win64\bin\nvim.exe"
 
 # Used by PSReadLine's ViEditVisually (the 'v' key in vi command mode) to
-# know which editor to launch on the current command line.
-$env:VISUAL = "$HOME\Applications\nvim-win64\bin\nvim.exe"
+# know which editor to launch on the current command line, and by git,
+# WSL, and other tools that read $EDITOR/$VISUAL. Must use forward
+# slashes: many of those tools invoke $EDITOR through a POSIX shell
+# (`sh -c "$EDITOR ..."`), which treats backslashes as escape characters
+# and mangles a backslash path like C:\Users\...\nvim.exe into
+# "C:Users...nvim.exe" (git then fails with "command not found"). Windows
+# itself accepts forward slashes in paths just fine, so this works in both
+# PowerShell and any POSIX-shell child process.
+$env:VISUAL = "$HOME\Applications\nvim-win64\bin\nvim.exe".Replace('\', '/')
 $env:EDITOR = $env:VISUAL
 
 # ==========================================
