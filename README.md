@@ -30,9 +30,10 @@ the other. The bash version is `bashmarks.plugin.sh` (sourced from
 
 ## Predictions / Tab Completion
 
-Both shells are configured with inline "ghost text" suggestions (based on
-command history) plus vi-mode-aware Tab completion, so the experience is
-consistent whether you're in PowerShell or WSL/Git Bash.
+PowerShell is configured with inline "ghost text" suggestions (based on
+command history) plus vi-mode-aware Tab completion. WSL/Git Bash uses plain
+GNU Readline vi-mode (see below) - no inline suggestion feature is
+configured there.
 
 ### PowerShell
 
@@ -50,20 +51,10 @@ consistent whether you're in PowerShell or WSL/Git Bash.
 
 ### WSL / Git Bash
 
-- Configured in `.bashrc` via **[ble.sh](https://github.com/akinomyoga/ble.sh)**
-  (Bash Line Editor), which replaces GNU Readline with inline ghost-text
-  suggestions from history, syntax highlighting, and vi-mode support.
-- Installed to `~/.local/share/blesh` by `INSTALL.sh`'s `ensure_ble_sh`
-  (WSL only - it needs `make`/`gawk`, which Git Bash on native Windows
-  doesn't provide; `.bashrc`'s `[ -r ... ]` file check makes it a no-op
-  there instead of an error).
-- Vi mode is picked up automatically from `.inputrc`'s
-  `set editing-mode vi` - no separate ble.sh vi-mode config is needed.
-- `Tab` (vi Insert mode) already triggers completion via ble.sh's own
-  default `vi_imap` binding (`ble-bind -f 'TAB' 'vi_imap/complete'`).
-- Per ble.sh's own setup instructions, it's sourced near the top of
-  `.bashrc` (`--attach=none`) and attached (`ble-attach`) at the very end,
-  after all other `.bashrc` customization.
+- Bash uses vi keybindings via `.inputrc`'s `set editing-mode vi`, plus
+  GNU Readline's built-in history search/completion. There is no
+  ghost-text/inline history suggestion feature configured for WSL/Git Bash
+  (unlike the PowerShell setup above).
 
 ## Alacritty Configuration
 
