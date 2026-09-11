@@ -8,6 +8,15 @@
 export EDITOR="vim"
 export VISUAL="$EDITOR"
 
+# Windows environment variables reach Git Bash unchanged. Convert
+# XDG_CONFIG_HOME before Vim reads its system filetype rules; a path such as
+# C:\Users\647663\.config is otherwise parsed as a regex containing the
+# illegal back-reference \6.
+if [[ -n ${MSYSTEM-} ]]; then
+    export XDG_CONFIG_HOME
+    XDG_CONFIG_HOME="$(cygpath -u "${XDG_CONFIG_HOME:-$HOME/.config}")"
+fi
+
 # WSL auto-appends the full Windows PATH via interop, including several
 # /mnt/c/... directories. Those live on the 9p network filesystem and are
 # extremely slow to stat/list (~600ms+ vs ~2ms for native ext4 dirs), which

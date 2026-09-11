@@ -55,6 +55,9 @@ configured there.
   GNU Readline's built-in history search/completion. There is no
   ghost-text/inline history suggestion feature configured for WSL/Git Bash
   (unlike the PowerShell setup above).
+- In Git Bash, `.bashrc` converts `XDG_CONFIG_HOME` to an MSYS/POSIX path.
+  This prevents Vim's system filetype rules from interpreting Windows path
+  backslashes as regular-expression back-references.
 
 ## Alacritty Configuration
 
