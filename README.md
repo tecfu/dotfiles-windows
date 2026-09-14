@@ -114,6 +114,16 @@ points (the Start Menu shortcut and the `alacritty` bash alias).
 
 ## AutoHotkey
 
+`desktop-switching.v2.ahk` explicitly requires AutoHotkey v2.0. `Ctrl+Alt+Left`
+and `Ctrl+Alt+Right` switch virtual desktops without moving the focused
+window. `Ctrl+Shift+Left/Right` move the focused window to the adjacent
+virtual desktop and follow it, keeping it focused.
+At the first or last desktop, moving beyond the edge does nothing.
+
+Window moves use Windows 11 24H2/25H2 shell COM interfaces instead of changing
+window styles. These internal interfaces are Windows-version-dependent and
+may need updating after a Windows upgrade. No external DLL is required.
+
 - Install AutoHotkey by downloading the [zip file from Github](https://github.com/AutoHotkey/AutoHotkey/releases), store version will likely blocked on corporate devices
 
 - Run Script at Startup

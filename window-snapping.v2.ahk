@@ -1,3 +1,4 @@
+#Requires AutoHotkey v2.0
 ; AutoHotkey v2 Script for Window Tiling and Maximize
 #Warn  ; Enable warnings for potential issues
 

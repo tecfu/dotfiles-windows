@@ -1,3 +1,4 @@
+#Requires AutoHotkey v2.0
 #SingleInstance Force
 #Warn   ; Enable warnings to assist with detecting common errors.
 SendMode "Input"  ; Recommended for new scripts due to its superior speed and reliability.
